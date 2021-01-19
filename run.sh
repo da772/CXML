@@ -1,5 +1,5 @@
 #!/bin/bash
-g++ test/test.cpp -o tests -I./include/
+g++ test/test.cpp -o tests.a -I./include/
 chmod +x tests
-./tests
+./tests.a
 
