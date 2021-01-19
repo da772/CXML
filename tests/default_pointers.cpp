@@ -46,12 +46,14 @@ int RunTests() {
         float f = CXML::GetNextAsFloat(c, endPos, &endPos);
         long l = CXML::GetNextAsHex(c, endPos, &endPos);
         std::string s = CXML::GetNextAsString(c, endPos, &endPos);
-		cls1->Allocate((int)i,(float)f, (long)l, (const std::string&)s);
+		cls1->Allocate(i, f, l, s);
 	});
+
+
 
 	cls2->SetProcessFunc([cls2](const char* c) {
 		ExampleClass_1* ex1 = CXML::GetNextAsClass<ExampleClass_1>(c);
-		cls2->Allocate((ExampleClass_1*)ex1);
+		cls2->Allocate(ex1);
 	});
 
 	cls2->SetAllocateFunc([](ExampleClass_1* c){
@@ -71,11 +73,10 @@ int RunTests() {
         std::cout << n.type << "->ExampleClass_1 = " << "( " << clss->exClass->x << ", " << clss->exClass->y << ", " << clss->exClass->z << ", " << clss->exClass->str << " )" << std::endl; 
         #endif
         // Clean
-        delete clss;
         delete clss->exClass;
+        delete clss;
 	}
 
-    cleanCounter = 0;
 
 	CXML::ClearRegistry();
     std::cout << ("default_pointers Test....................... Passed - "+std::string(__FILE__))<< std::endl;

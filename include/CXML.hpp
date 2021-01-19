@@ -9,7 +9,7 @@
     #include <cassert>
     #define ASSERT(x) assert(x);
 #endif
-#include <string.h>
+#include <string>
 
 #ifndef ASSERT
     #define ASSERT(x)
@@ -17,14 +17,19 @@
 
 namespace CXML {
 
-extern std::unordered_map<std::string, void*> class_registry;
+class Registry {
+public:
+    static std::unordered_map<std::string, void*> registry;
+};
+
 static size_t strMax = std::numeric_limits<std::size_t>::max(); 
+
 
 template<typename T, typename... Arguments>
 class CXML_Class {
     public:
     void* data;
-    inline void* Allocate(Arguments&& ... args) {
+    inline void* Allocate(Arguments... args) {
         data = allocateFunc(std::forward<Arguments>(args)...);
         return data;
     }
@@ -52,29 +57,27 @@ struct CXML_Node {
 
 template<typename... Arguments>
 inline CXML_Class<Arguments...>* RegisterClass(const char* name) {
-    ASSERT(class_registry.find(name) != class_registry.end());
+    ASSERT(Registry::registry.find(name) != Registry::registry.end());
     CXML_Class<Arguments...>* s = new CXML_Class<Arguments...>();
-    class_registry[name] = (void*)s;
+    Registry::registry[name] = (void*)s;
     return s;
 }
 
 inline void DeregisterClass(const char* name) {
-    ASSERT(class_registry.find(name) != class_registry.end());
-    class_registry.erase(name);
+    ASSERT(Registry::registry.find(name) != Registry::registry.end());
+    Registry::registry.erase(name);
 }
 
-
-
 inline void* GetClass(const char* name) {
-    ASSERT(class_registry.find(name) != class_registry.end());
-    return class_registry[name];
+    ASSERT(Registry::registry.find(name) != Registry::registry.end());
+    return  Registry::registry[name];
 }
 
 inline void ClearRegistry() {
-    for (const std::pair<std::string, void*> pair : class_registry) {
+    for (const std::pair<std::string, void*> pair : Registry::registry) {
         free(pair.second);
     }
-    class_registry.empty();
+    Registry::registry.clear();
 }
 
 inline bool ValidNode(const CXML_Node& node) {
@@ -87,7 +90,7 @@ inline CXML_Node GetNext(const char* str, size_t startPos = 0) {
     CXML_Node node = {"\0", "\0", 0};
     int skip = 0;
     
-    for (int i = startPos; i < strMax; i++) {
+    for (size_t i = startPos; i < strMax; i++) {
         if (str[i] == '\0') break;
         switch (phase) {
             case 0: {

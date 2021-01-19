@@ -48,12 +48,12 @@ int RunTests() {
         float f = CXML::GetNextAsFloat(c, endPos, &endPos);
         long l = CXML::GetNextAsHex(c, endPos, &endPos);
         std::string s = CXML::GetNextAsString(c, endPos, &endPos);
-		cls1->Allocate((int)i,(float)f, (long)l, (const std::string&)s);
+		cls1->Allocate(i,f,l, s);
 	});
 
 	cls2->SetProcessFunc([cls2](const char* c) {
 		DynamicPointer_Wrapper<ExampleClass_1>* ex1 = CXML::GetNextAsClass<DynamicPointer_Wrapper<ExampleClass_1>>(c);
-		cls2->Allocate(std::dynamic_pointer_cast<ExampleClass_1>(ex1->GetPtr()));
+		cls2->Allocate(ex1->GetPtr());
 	});
 
 	cls2->SetAllocateFunc([](std::shared_ptr<ExampleClass_1> c){

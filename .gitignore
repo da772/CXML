@@ -1,2 +1,9 @@
 *.a
 .vscode/
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+.bin/
+.obj/

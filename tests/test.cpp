@@ -41,13 +41,14 @@ int main() {
 	
 
 	*/
-
- 	CXML::class_registry = std::unordered_map<std::string, void*>();
+	std::unordered_map<std::string, void*> map;
 
 	std::cout << "Running Tests...\n" << std::endl;
 	int dynamicptr_tst = dynamic_pointers::RunTests();
-	//int defaultptr_tst = default_pointers::RunTests();
+	int defaultptr_tst = default_pointers::RunTests();
 	std::cout << "\nTests Complete." << std::endl;
+
+	std::cin.get();
 
 	return 0;
 
