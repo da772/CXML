@@ -1,0 +1,4 @@
+#!/bin/bash
+g++ -c tests/test.cpp -o obj/test.o -I./include/chmod +x tests.a
+./tests.a
+

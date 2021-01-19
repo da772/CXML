@@ -1,3 +1,7 @@
+#pragma once
+#ifndef XCML_HEADER
+#define XCML_HEADER
+
 #include <unordered_map>
 #include <functional>
 #include <vector>
@@ -13,23 +17,24 @@
 
 namespace CXML {
 
-static std::unordered_map<std::string, void*> class_registry;
+extern std::unordered_map<std::string, void*> class_registry;
+static size_t strMax = std::numeric_limits<std::size_t>::max(); 
 
 template<typename T, typename... Arguments>
 class CXML_Class {
     public:
     void* data;
-    void* Allocate(Arguments&& ... args) {
+    inline void* Allocate(Arguments&& ... args) {
         data = allocateFunc(std::forward<Arguments>(args)...);
         return data;
     }
-    void Process(const char* string) {
+    inline void Process(const char* string) {
         processFunc(string);
     }
-    void SetProcessFunc(const std::function<void(const char*)>& func) {
+    inline void SetProcessFunc(const std::function<void(const char*)>& func) {
         processFunc = func;
     }
-    void SetAllocateFunc(const std::function<void*(Arguments...)>& func) {
+    inline void SetAllocateFunc(const std::function<void*(Arguments...)>& func) {
         allocateFunc = func;
     }
     private:
@@ -46,41 +51,43 @@ struct CXML_Node {
 };
 
 template<typename... Arguments>
-CXML_Class<Arguments...>* RegisterClass(const char* name) {
+inline CXML_Class<Arguments...>* RegisterClass(const char* name) {
     ASSERT(class_registry.find(name) != class_registry.end());
     CXML_Class<Arguments...>* s = new CXML_Class<Arguments...>();
     class_registry[name] = (void*)s;
     return s;
 }
 
-void DeregisterClass(const char* name) {
+inline void DeregisterClass(const char* name) {
     ASSERT(class_registry.find(name) != class_registry.end());
     class_registry.erase(name);
 }
 
-void* GetClass(const char* name) {
+
+
+inline void* GetClass(const char* name) {
     ASSERT(class_registry.find(name) != class_registry.end());
     return class_registry[name];
 }
 
-void FreeRegistry() {
+inline void ClearRegistry() {
     for (const std::pair<std::string, void*> pair : class_registry) {
         free(pair.second);
     }
     class_registry.empty();
 }
 
-bool ValidNode(const CXML_Node& node) {
+inline bool ValidNode(const CXML_Node& node) {
     return node.type != "\0" && node.info != "\0" && node.endPos != 0;
 }
 
-CXML_Node GetNext(const char* str, size_t startPos = 0) {
+inline CXML_Node GetNext(const char* str, size_t startPos = 0) {
     uint8_t phase = 0;
     size_t lastChar = 0; 
     CXML_Node node = {"\0", "\0", 0};
     int skip = 0;
-    size_t length = std::numeric_limits<std::size_t>::max();
-    for (int i = startPos; i < length; i++) {
+    
+    for (int i = startPos; i < strMax; i++) {
         if (str[i] == '\0') break;
         switch (phase) {
             case 0: {
@@ -126,7 +133,24 @@ CXML_Node GetNext(const char* str, size_t startPos = 0) {
     return std::move(node);
 }
 
-const std::string GetNextAsString(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
+
+template<typename T>
+inline T* GetNextAsClass(const char* info) {
+    CXML_Node node = GetNext(info);
+    CXML_Class<T>* clss = (CXML_Class<T>*)GetClass(node.type.c_str());
+    clss->Process(node.info.c_str());
+    return (T*)clss->data;
+}
+
+template<typename T>
+inline T* GetNodeAsClass(const CXML_Node& node) {
+    CXML_Class<T>* clss = (CXML_Class<T>*)GetClass(node.type.c_str());
+    clss->Process(node.info.c_str());
+    return (T*)clss->data;
+}
+
+
+inline const std::string GetNextAsString(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
     std::string i;
     CXML_Node n = GetNext(str, startPos);
     i = n.info;
@@ -136,7 +160,7 @@ const std::string GetNextAsString(const char* str, size_t startPos = 0,size_t* e
     return i;
 }
 
-const std::vector<int> GetNextAsInts(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
+inline const std::vector<int> GetNextAsInts(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
     std::vector<int> vec;
     CXML_Node node = GetNext(str, startPos);
     vec.push_back(std::stoi(node.info));
@@ -149,7 +173,7 @@ const std::vector<int> GetNextAsInts(const char* str, int amt, size_t startPos =
     return std::move(vec);
 }
 
-const int GetNextAsInt(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
+inline const int GetNextAsInt(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
     int i;
     CXML_Node n = GetNext(str, startPos);
     i = std::stoi(n.info);
@@ -160,7 +184,7 @@ const int GetNextAsInt(const char* str, size_t startPos = 0,size_t* endPos = nul
     return i;
 }
 
-const std::vector<float> GetNextAsFloats(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
+inline const std::vector<float> GetNextAsFloats(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
     std::vector<float> vec;
     CXML_Node node = GetNext(str, startPos);
     vec.push_back(std::stof(node.info));
@@ -173,7 +197,7 @@ const std::vector<float> GetNextAsFloats(const char* str, int amt, size_t startP
     return std::move(vec);
 }
 
-const float GetNextAsFloat(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
+inline const float GetNextAsFloat(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
     float i;
     CXML_Node n = GetNext(str, startPos);
     i = std::stof(n.info.c_str());
@@ -182,7 +206,7 @@ const float GetNextAsFloat(const char* str, size_t startPos = 0,size_t* endPos =
     return i;
 }
 
-const std::vector<long> GetNextAsLongs(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
+inline const std::vector<long> GetNextAsLongs(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
     std::vector<long> vec;
     CXML_Node node = GetNext(str, startPos);
     vec.push_back(std::stol(node.info));
@@ -195,7 +219,7 @@ const std::vector<long> GetNextAsLongs(const char* str, int amt, size_t startPos
     return std::move(vec);
 }
 
-const long GetNextAsLong(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
+inline const long GetNextAsLong(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
     long i;
     CXML_Node n = GetNext(str, startPos);
     i = std::stol(n.info.c_str());
@@ -204,7 +228,7 @@ const long GetNextAsLong(const char* str, size_t startPos = 0,size_t* endPos = n
     return i;
 }
 
-const std::vector<long> GetNextAsHexs(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
+inline const std::vector<long> GetNextAsHexs(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
     std::vector<long> vec;
     CXML_Node node = GetNext(str, startPos);
     vec.push_back(std::stol(node.info,0,16));
@@ -217,7 +241,7 @@ const std::vector<long> GetNextAsHexs(const char* str, int amt, size_t startPos 
     return std::move(vec);
 }
 
-const long GetNextAsHex(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
+inline const long GetNextAsHex(const char* str, size_t startPos = 0,size_t* endPos = nullptr ) {
     long i;
     CXML_Node n = GetNext(str, startPos);
     i = std::stol(n.info.c_str(),0,16);
@@ -227,3 +251,5 @@ const long GetNextAsHex(const char* str, size_t startPos = 0,size_t* endPos = nu
 }
 
 }
+
+#endif
