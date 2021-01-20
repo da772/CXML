@@ -11,7 +11,7 @@ namespace default_pointers {
 
 
 // Initalize CXML
-static CXML CXML;
+static ::CXML CXML;
 
 static int Setup();
 static int Process(const std::string& cxml);

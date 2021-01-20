@@ -27,7 +27,7 @@ class CXML {
     template<typename T, typename... Arguments>
     class CXML_Data {
         public:
-        void* data;
+        void* data = nullptr;
         inline void* Allocate(Arguments... args) {
             data = allocateFunc(std::forward<Arguments>(args)...);
             return data;
