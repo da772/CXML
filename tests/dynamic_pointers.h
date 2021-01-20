@@ -2,13 +2,23 @@
 #include <memory>
 #include <string>
 
+
+#define TEST_ASSERT(x) if (x) ; else { std::cout <<  ("dynamic_pointers Test...................... Failed - "+std::string(__FILE__)+"(Line "+std::to_string(__LINE__) +")")<< std::endl; return __LINE__;}
+
+#if  DYNAMIC_POINTER_TEST_DEBUG
+#define DEBUG_OUTPUT
+#endif
+
+
 namespace dynamic_pointers {
 
     static int AllocCounter = 0;
 
         class DefaultClass {
         public:
-            inline DefaultClass() : str("DefaultClass") {dynamic_pointers::AllocCounter++;};
+            inline DefaultClass() : str("DefaultClass") { 
+                 dynamic_pointers::AllocCounter++;
+                };
             inline ~DefaultClass() { dynamic_pointers::AllocCounter--; };
             std::string str;
     };

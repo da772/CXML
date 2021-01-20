@@ -1,12 +1,18 @@
 #pragma once
 #include <string>
+#include <iostream>
 
 namespace default_pointers {
 
   
     class DefaultClass {
         public:
-            inline DefaultClass() : str("DefaultClass") {};
+            inline DefaultClass() : str("DefaultClass") {
+                #if DEFAULT_POINTER_TEST_DEBUG
+                    std::cout << "Default Class Created!" << std::endl;
+                #endif
+
+            };
             inline ~DefaultClass() {};
             std::string str;
     };

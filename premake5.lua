@@ -26,8 +26,7 @@ workspace "CXML"
         files 
         {
             "tests/**.cpp",
-            "tests/**.hpp",
-            "src/**.cpp"
+            "tests/**.hpp"
         }
 
         includedirs 

@@ -41,8 +41,6 @@ int main() {
 	
 
 	*/
-	std::unordered_map<std::string, void*> map;
-
 	std::cout << "Running Tests...\n" << std::endl;
 	int dynamicptr_tst = dynamic_pointers::RunTests();
 	int defaultptr_tst = default_pointers::RunTests();
