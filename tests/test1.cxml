@@ -1,0 +1,23 @@
+<ExampleClass_2> 
+    <constructor>
+        <ExampleClass_1>
+            <constructor>
+                <int> 33 </int>
+                <float> 32.12 </float>
+                <hex> FF </hex>
+                <string>FOO</string>
+            </constructor>
+        </ExampleClass_1>
+    </constructor>
+    <function>
+        <SetVars>
+            <int> 22 </int>
+            <float> 55.2123 </float>
+            <hex> EEFF </hex>
+            <string> BAR </string>
+        </SetVars>
+    </function>
+</ExampleClass_2>
+<DefaultClass>
+
+</DefaultClass>

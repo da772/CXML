@@ -24,9 +24,8 @@ public:
 
 static size_t strMax = std::numeric_limits<std::size_t>::max(); 
 
-
 template<typename T, typename... Arguments>
-class CXML_Class {
+class CXML_Data {
     public:
     void* data;
     inline void* Allocate(Arguments... args) {
@@ -34,7 +33,8 @@ class CXML_Class {
         return data;
     }
     inline void Process(const char* string) {
-        processFunc(string);
+        if (processFunc) processFunc(string);
+        else Allocate();
     }
     inline void SetProcessFunc(const std::function<void(const char*)>& func) {
         processFunc = func;
@@ -43,7 +43,7 @@ class CXML_Class {
         allocateFunc = func;
     }
     private:
-    std::function<void(const char*)> processFunc;
+    std::function<void(const char*)> processFunc = nullptr;
     std::function<void*(Arguments...)> allocateFunc = [](Arguments&& ... args) {
         return (void*) new T(std::forward<Arguments>(args)...);
     };
@@ -56,9 +56,9 @@ struct CXML_Node {
 };
 
 template<typename... Arguments>
-inline CXML_Class<Arguments...>* RegisterClass(const char* name) {
+inline CXML_Data<Arguments...>* RegisterClass(const char* name) {
     ASSERT(Registry::registry.find(name) != Registry::registry.end());
-    CXML_Class<Arguments...>* s = new CXML_Class<Arguments...>();
+    CXML_Data<Arguments...>* s = new CXML_Data<Arguments...>();
     Registry::registry[name] = (void*)s;
     return s;
 }
@@ -138,16 +138,18 @@ inline CXML_Node GetNext(const char* str, size_t startPos = 0) {
 
 
 template<typename T>
-inline T* GetNextAsClass(const char* info) {
+inline T* GetNextAsClass(const char* info, size_t* endPos = nullptr) {
     CXML_Node node = GetNext(info);
-    CXML_Class<T>* clss = (CXML_Class<T>*)GetClass(node.type.c_str());
+    CXML_Data<T>* clss = (CXML_Data<T>*)GetClass(node.type.c_str());
     clss->Process(node.info.c_str());
+    if (endPos)
+        *endPos = node.endPos;
     return (T*)clss->data;
 }
 
 template<typename T>
 inline T* GetNodeAsClass(const CXML_Node& node) {
-    CXML_Class<T>* clss = (CXML_Class<T>*)GetClass(node.type.c_str());
+    CXML_Data<T>* clss = (CXML_Data<T>*)GetClass(node.type.c_str());
     clss->Process(node.info.c_str());
     return (T*)clss->data;
 }

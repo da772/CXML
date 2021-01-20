@@ -4,6 +4,12 @@
 namespace default_pointers {
 
   
+    class DefaultClass {
+        public:
+            inline DefaultClass() : str("DefaultClass") {};
+            inline ~DefaultClass() {};
+            std::string str;
+    };
 
     class ExampleClass_1 {
         public:
@@ -20,6 +26,7 @@ namespace default_pointers {
             inline ExampleClass_2(ExampleClass_1* exClass) : exClass(exClass) {};
             inline ~ExampleClass_2() {  };
             ExampleClass_1* exClass;
+            inline void SetVars(int x, float y, long z, const std::string& str) {exClass->x = x; exClass->y = y; exClass->z = z; exClass->str = str;}
     };
 
     int RunTests();
