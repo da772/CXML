@@ -18,11 +18,6 @@ workspace "CXML"
         targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
         objdir ("%{prj.location}/obj/" .. outputdir .. "/%{prj.name}")
 
-        defines 
-        {
-            "GE_PROJECT_WizardJump"
-        }
-        
         files 
         {
             "tests/**.cpp",
