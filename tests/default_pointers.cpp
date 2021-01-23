@@ -95,7 +95,7 @@ static int Process(const std::string& cxml) {
     DefaultClass* defaultClass = nullptr;
     ExampleClass_1* exampleClass1 = nullptr;
     ExampleClass_2* exampleClass2 = nullptr;
-    while (CXML.ValidNode(n)) {
+    while (CXML::ValidNode(n)) {
         if (n.type == "DefaultClass") {
             #ifdef DEBUG_OUTPUT
             std::cout << "Class: " << n.type << std::endl;
@@ -161,7 +161,7 @@ static int Setup() {
         CXML::CXML_Node n = CXML.GetNext(c); // Get line 2
         ExampleClass_1* ex1; // Reference to constructor arg
         ExampleClass_2* ex2; // Reference to created object
-        while (CXML.ValidNode(n)) { // Check if current node is valid
+        while (CXML::ValidNode(n)) { // Check if current node is valid
             #ifdef DEBUG_OUTPUT
             std::cout << "Node Loop: " << n.type << std::endl;
             #endif

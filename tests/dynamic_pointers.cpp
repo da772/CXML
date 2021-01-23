@@ -80,7 +80,7 @@ int RunTests() {
 
     // Clean up registry
 	CXML.ClearRegistry();
-    std::cout << ("dynamic_pointers Test...................... Passed - "+std::string(__FILE__))<< std::endl;
+    std::cout << ("dynamic_pointers Test....................... Passed - "+std::string(__FILE__))<< std::endl;
 
     return 0;
 
@@ -91,7 +91,7 @@ static int Process(const std::string& cxml) {
     std::shared_ptr<DefaultClass> defaultClass = nullptr;
     std::shared_ptr<ExampleClass_1> exampleClass1 = nullptr;
     std::shared_ptr<ExampleClass_2> exampleClass2 = nullptr;
-    while (CXML.ValidNode(n)) {
+    while (CXML::ValidNode(n)) {
         if (n.type == "DefaultClass") {
             #ifdef DEBUG_OUTPUT
             std::cout << "Class: " << n.type << std::endl;
@@ -166,7 +166,7 @@ static int Setup() {
         CXML::CXML_Node n = CXML.GetNext(c); // Get line 2
         DynamicPointer_Wrapper<ExampleClass_1>* ex1; // Reference to constructor arg
         DynamicPointer_Wrapper<ExampleClass_2>* ex2; // Reference to created object
-        while (CXML.ValidNode(n)) { // Check if current node is valid
+        while (CXML::ValidNode(n)) { // Check if current node is valid
             #ifdef DEBUG_OUTPUT
             std::cout << "Node Loop: " << n.type << std::endl;
             #endif

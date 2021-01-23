@@ -2,6 +2,7 @@
 #include "CXML/CXML.hpp"
 #include "dynamic_pointers.h"
 #include "default_pointers.h"
+#include "default_types.h"
 #include <iostream>
 #include <unordered_map>
 
@@ -50,6 +51,8 @@ int main() {
 
 	*/
 	std::cout << "Running Tests...\n" << std::endl;
+	int defaulttype_tst = default_types::RunTests(); 
+	CXML_ASSERT(!defaulttype_tst)
 	int dynamicptr_tst = dynamic_pointers::RunTests();
 	CXML_ASSERT(!dynamicptr_tst)
 	int defaultptr_tst = default_pointers::RunTests();

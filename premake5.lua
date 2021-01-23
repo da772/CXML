@@ -12,7 +12,7 @@ workspace "CXML"
     project "CXML_Tests"
         kind "ConsoleApp"
         language "C++"
-            cppdialect "C++17"
+            cppdialect "C++11"
         staticruntime "on"
 
         targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")

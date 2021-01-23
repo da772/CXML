@@ -15,6 +15,8 @@
     #define ASSERT(x)
 #endif
 
+#include <iostream>
+
 static size_t strMax = std::numeric_limits<std::size_t>::max(); 
 
 class CXML {
@@ -80,8 +82,12 @@ class CXML {
         registry.clear();
     }
 
-    inline bool ValidNode(const CXML_Node& node) {
+    inline static bool ValidNode(const CXML_Node& node) {
         return node.type != "\0" && node.info != "\0" && node.endPos != 0;
+    }
+
+    inline CXML_Node GetNext(const char* str, const CXML_Node& node) {
+        return GetNext(str, node.endPos);
     }
 
     inline CXML_Node GetNext(const char* str, size_t startPos = 0) {
@@ -199,6 +205,15 @@ class CXML {
         return i;
     }
 
+    inline const int GetNodeAsInt(const CXML_Node& n, size_t* endPos = nullptr) {
+        int i = std::stoi(n.info);
+
+        if (endPos)
+            *endPos = n.endPos;
+
+        return i;
+    }
+
     inline const std::vector<float> GetNextAsFloats(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
         std::vector<float> vec;
         CXML_Node node = GetNext(str, startPos);
@@ -216,6 +231,13 @@ class CXML {
         float i;
         CXML_Node n = GetNext(str, startPos);
         i = std::stof(n.info.c_str());
+        if (endPos)
+            *endPos = n.endPos;
+        return i;
+    }
+
+    inline const float GetNodeAsFloat(const CXML_Node& n, size_t* endPos = nullptr) {
+        float i = std::stof(n.info.c_str());
         if (endPos)
             *endPos = n.endPos;
         return i;
@@ -243,6 +265,13 @@ class CXML {
         return i;
     }
 
+    inline const long GetNodeAsLong(const CXML_Node& n, size_t* endPos = nullptr) {
+        long i = std::stol(n.info.c_str());
+        if (endPos)
+            *endPos = n.endPos;
+        return i;
+    }
+
     inline const std::vector<long> GetNextAsHexs(const char* str, int amt, size_t startPos = 0, size_t* endPos = nullptr) {
         std::vector<long> vec;
         CXML_Node node = GetNext(str, startPos);
@@ -260,6 +289,13 @@ class CXML {
         long i;
         CXML_Node n = GetNext(str, startPos);
         i = std::stol(n.info.c_str(),0,16);
+        if (endPos)
+            *endPos = n.endPos;
+        return i;
+    }
+
+    inline const long GetNodeAsHex(const CXML_Node& n, size_t* endPos = nullptr) {
+        long i = std::stol(n.info.c_str(),0,16);
         if (endPos)
             *endPos = n.endPos;
         return i;
