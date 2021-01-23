@@ -53,7 +53,7 @@ int main() {
 	int dynamicptr_tst = dynamic_pointers::RunTests();
 	CXML_ASSERT(!dynamicptr_tst)
 	int defaultptr_tst = default_pointers::RunTests();
-	CXML_ASSERT(defaultptr_tst)
+	CXML_ASSERT(!defaultptr_tst)
 	std::cout << "\nTests Complete." << std::endl;
 
 	return 0;
