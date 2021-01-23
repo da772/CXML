@@ -1,6 +1,6 @@
 #include "config.h"
 #include "default_pointers.h"
-#include "CXML.hpp"
+#include "CXML/CXML.hpp"
 
 #define TEST_ASSERT(x) if (x) ; else { std::cout <<  ("default_pointers Test...................... Failed - "+std::string(__FILE__)+"(Line "+std::to_string(__LINE__) +")")<< std::endl; return __LINE__;}
 #if DEFAULT_POINTER_TEST_DEBUG

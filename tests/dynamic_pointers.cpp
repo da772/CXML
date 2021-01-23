@@ -1,6 +1,6 @@
 #include "config.h"
 #include "dynamic_pointers.h"
-#include "CXML.hpp"
+#include "CXML/CXML.hpp"
 #include <iostream>
 
 namespace dynamic_pointers {
