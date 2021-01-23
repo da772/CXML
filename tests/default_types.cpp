@@ -16,12 +16,12 @@ namespace default_types {
 
 
     static std::string cxml = R"(
-        <int> 1 </int>
+        <int name=myname title=mytitle tag="my tag"> 1 </int>
         <int> -32767 </int>
         <float> 2.3322 </float>
         <int> 32767 </int>
         <long> 2147483647 </long>
-        <float> 5.77423 </float>
+        <float name="second float"> 5.77423 </float>
         <hex> EE </hex>
         <long> -2147483647 </long>
         <hex> FF </hex>
@@ -30,15 +30,19 @@ namespace default_types {
     )";
 
     int cxmlInt[] = { 1, -32767,32767 };
-    float cxmlFloat[] = { 2.3322 , 5.77423  };
+    float cxmlFloat[] = { 2.3322f , 5.77423f };
     long cxmlLong[] = {2147483647, 0xEE, -2147483647, 0xFF, 2147483};
 
     int RunTests() {
 
         CXML::CXML_Node n = CXML.GetNext(cxml.c_str());
 
-        int intCounter = 0, floatCounter =0, longCounter =0;
+        TEST_ASSERT(n.tags.size() == 3);
+        TEST_ASSERT(n.tags["name"] == "myname" && n.tags["title"] == "mytitle" && n.tags["tag"] == "my tag");
+
+        int intCounter = 0, floatCounter = 0, longCounter = 0, nodeCounter = 0;
         while (CXML::ValidNode(n)) {
+            nodeCounter++;
             if (n.type == "int") {
                 #ifdef DEBUG_OUTPUT
                     std::cout << "Node (int): " << CXML.GetNodeAsInt(n) << " - Expected: " << cxmlInt[intCounter] << std::endl;
@@ -55,12 +59,14 @@ namespace default_types {
                  #ifdef DEBUG_OUTPUT
                     std::cout << "Node (float): " << CXML.GetNodeAsFloat(n) << " - Expected: " << cxmlFloat[floatCounter] << std::endl;
                 #endif
+                TEST_ASSERT(( (floatCounter == 1) ^ (n.tags.size() == 0)) );
                 TEST_ASSERT(CXML.GetNodeAsFloat(n) == cxmlFloat[floatCounter++]);
             }
 
             n = CXML.GetNext(cxml.c_str(), n);
         }
 
+        TEST_ASSERT(nodeCounter == 10);
 
         std::cout << ("default_types Test.......................... Passed - "+std::string(__FILE__))<< std::endl;
         return 0;

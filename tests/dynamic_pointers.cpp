@@ -44,9 +44,9 @@ int RunTests() {
 
     
     std::string cxml = R"(
-       <ExampleClass_2>
+       <ExampleClass_2 name="ExampleClass2">
         <constructor>
-            <ExampleClass_1>
+            <ExampleClass_1 name="ExampleClass1">
                 <constructor>
                     <int> 33 </int>
                     <float> 32.12 </float>
@@ -64,7 +64,7 @@ int RunTests() {
             </SetVars>
         </function>
     </ExampleClass_2>
-    <DefaultClass>
+    <DefaultClass name=DefaultClass>
     </DefaultClass>
     )";
 
@@ -97,12 +97,14 @@ static int Process(const std::string& cxml) {
             std::cout << "Class: " << n.type << std::endl;
             #endif
             defaultClass = CXML.GetNodeAsClass<DynamicPointer_Wrapper<DefaultClass>>(n)->GetPtr();
+            TEST_ASSERT(n.tags["name"] == "DefaultClass");
             TEST_ASSERT(defaultClass->str == "DefaultClass");
         }
         if (n.type == "ExampleClass_2") {
             #ifdef DEBUG_OUTPUT
             std::cout << "Class: " << n.type << std::endl;
             #endif
+            TEST_ASSERT(n.tags["name"] == "ExampleClass2");
             exampleClass2 = CXML.GetNodeAsClass<DynamicPointer_Wrapper<ExampleClass_2>>(n)->GetPtr();
             exampleClass1 = exampleClass2->exClass;
             // Manually clean up

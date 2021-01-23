@@ -45,7 +45,7 @@ int RunTests() {
     */
 
     std::string cxml = R"(
-       <ExampleClass_2>
+       <ExampleClass_2 name="ExampleClass2">
         <constructor>
             <ExampleClass_1>
                 <constructor>
@@ -65,7 +65,7 @@ int RunTests() {
             </SetVars>
         </function>
     </ExampleClass_2>
-    <DefaultClass>
+    <DefaultClass name=DefaultClass>
     </DefaultClass>
     )";
     #ifdef DEBUG_OUTPUT
@@ -102,6 +102,7 @@ static int Process(const std::string& cxml) {
             #endif
             defaultClass = (DefaultClass*)CXML.GetNodeAsClass<void>(n);
             TEST_ASSERT(defaultClass->str == "DefaultClass");
+            TEST_ASSERT(n.tags["name"] == "DefaultClass");
         }
         if (n.type == "ExampleClass_2") {
             #ifdef DEBUG_OUTPUT
@@ -109,6 +110,7 @@ static int Process(const std::string& cxml) {
             #endif
             exampleClass2 = CXML.GetNodeAsClass<ExampleClass_2>(n);
             exampleClass1 = exampleClass2->exClass;
+            TEST_ASSERT(n.tags["name"] == "ExampleClass2");
             // Manually clean up
             
         }
