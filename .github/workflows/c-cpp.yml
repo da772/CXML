@@ -16,4 +16,4 @@ jobs:
     - name: configure
       run: ./scripts/linuxGenerate.sh
     - name: make
-      run: make
+      run: make && ./bin/Debug-linux-x86_64/CXML_Tests/CXML_Tests
